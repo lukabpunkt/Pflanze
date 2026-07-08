@@ -5,7 +5,8 @@
   --ink-dim: #8FB39E;
   --aqua: #8FD9E8;
   --aqua-deep: #3E97BC;
-  --flower: #F4C978;
+  --heart: #F27EA9;
+  --heart-deep: #E0558C;
 }
 
 * { box-sizing: border-box; }
@@ -50,7 +51,7 @@ body {
   margin: 6px 0 0;
   font-family: "Fraunces", Georgia, serif;
   font-weight: 700;
-  font-size: clamp(52px, 16vw, 68px);
+  font-size: clamp(48px, 15vw, 64px);
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
@@ -85,7 +86,11 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  transition: opacity 0.45s ease, transform 0.45s ease;
 }
+
+.stage-area.swap-out { opacity: 0; transform: translateX(-44px); }
+.stage-area.swap-in  { opacity: 0; transform: translateX(44px); }
 
 /* warmer Lampenschein hinter der Pflanze */
 .stage-area::before {
@@ -120,6 +125,32 @@ body {
   100% { transform: scale(1, 1); }
 }
 
+/* ---------- Gesicht ---------- */
+
+#face .blush {
+  fill: var(--heart-deep);
+  opacity: 0.25;
+  transition: opacity 0.35s ease;
+}
+
+#face.happy .blush { opacity: 0.5; }
+
+#eyes-open circle { fill: #3D2417; }
+
+#eyes-happy path {
+  stroke: #3D2417;
+  stroke-width: 2.6;
+  fill: none;
+  stroke-linecap: round;
+}
+
+#mouth {
+  stroke: #3D2417;
+  stroke-width: 2.4;
+  fill: none;
+  stroke-linecap: round;
+}
+
 /* ---------- Steuerung ---------- */
 
 .controls {
@@ -141,9 +172,21 @@ body {
 
 .hint.thirsty { color: #E8B06B; }
 
+.hint.love {
+  color: var(--heart);
+  font-weight: 800;
+}
+
+.btn-ring {
+  --p: 0;
+  border-radius: 50%;
+  padding: 5px;
+  background: conic-gradient(var(--heart) calc(var(--p) * 1%), rgba(143, 217, 232, 0.14) 0);
+}
+
 .water-btn {
-  width: 92px;
-  height: 92px;
+  width: 88px;
+  height: 88px;
   border: none;
   border-radius: 50%;
   display: grid;
@@ -157,14 +200,14 @@ body {
     0 8px 28px rgba(122, 209, 232, 0.35),
     inset 0 -8px 14px rgba(0, 42, 60, 0.28),
     inset 0 3px 6px rgba(255, 255, 255, 0.35);
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.3s ease;
 }
 
-.water-btn:active {
-  transform: scale(0.9);
-  box-shadow:
-    0 4px 14px rgba(122, 209, 232, 0.28),
-    inset 0 -4px 10px rgba(0, 42, 60, 0.3);
+.water-btn:active { transform: scale(0.9); }
+
+.water-btn:disabled {
+  cursor: default;
+  opacity: 0.75;
 }
 
 .water-btn:focus-visible {
@@ -172,13 +215,132 @@ body {
   outline-offset: 4px;
 }
 
-.record {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+/* ---------- Fortschritts-Herzen ---------- */
+
+.progress {
+  display: flex;
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.p-heart {
+  width: 21px;
+  height: 21px;
+  overflow: visible;
+}
+
+.p-heart path {
+  fill: none;
+  stroke: rgba(234, 244, 236, 0.32);
+  stroke-width: 2;
+  transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+.p-heart.current path { stroke: var(--heart); }
+.p-heart.current { animation: heartPulse 1.6s ease-in-out infinite; }
+
+.p-heart.done path {
+  fill: var(--heart);
+  stroke: var(--heart);
+}
+
+.p-heart.done { animation: heartPop 0.5s ease; }
+
+@keyframes heartPulse {
+  50% { transform: scale(1.18); }
+}
+
+@keyframes heartPop {
+  40% { transform: scale(1.5); }
+}
+
+/* ---------- Overlays ---------- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(7, 22, 17, 0.62);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  transition: opacity 0.45s ease, visibility 0.45s;
+}
+
+.overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.card {
+  position: relative;
+  max-width: 330px;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(180deg, #1A4735, #123528);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 26px;
+  padding: 38px 28px 32px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.card-title {
+  margin: 0 0 12px;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 700;
+  font-size: 31px;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.card-text {
+  margin: 0 0 24px;
+  font-size: 15px;
+  line-height: 1.55;
   color: var(--ink-dim);
-  opacity: 0.8;
+}
+
+.cta {
+  font-family: "Nunito", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  color: #fff;
+  background: linear-gradient(180deg, #F58FB4, var(--heart-deep));
+  border: none;
+  border-radius: 999px;
+  padding: 14px 32px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(224, 85, 140, 0.4);
+  transition: transform 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cta:active { transform: scale(0.95); }
+
+.cta:focus-visible {
+  outline: 3px solid var(--aqua);
+  outline-offset: 3px;
+}
+
+.deco-heart {
+  position: absolute;
+  fill: var(--heart);
+  opacity: 0.9;
+  overflow: visible;
+  animation: floaty 3.6s ease-in-out infinite alternate;
+}
+
+.deco-heart.slow {
+  animation-duration: 5s;
+  fill: var(--heart-deep);
+}
+
+@keyframes floaty {
+  from { transform: translateY(0) rotate(-7deg); }
+  to   { transform: translateY(-9px) rotate(8deg); }
 }
 
 /* ---------- Desktop-Rahmen ---------- */
@@ -195,4 +357,10 @@ body {
 @media (prefers-reduced-motion: reduce) {
   #plant-wrap.boing { animation: none; }
   .stage.pulse { animation: none; }
+  .p-heart.current,
+  .p-heart.done,
+  .deco-heart { animation: none; }
+  .stage-area { transition: opacity 0.45s ease; }
+  .stage-area.swap-out,
+  .stage-area.swap-in { transform: none; }
 }
