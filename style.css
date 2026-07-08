@@ -1,0 +1,198 @@
+:root {
+  --bg-0: #0B241C;
+  --bg-1: #143A2B;
+  --ink: #EAF4EC;
+  --ink-dim: #8FB39E;
+  --aqua: #8FD9E8;
+  --aqua-deep: #3E97BC;
+  --flower: #F4C978;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background:
+    radial-gradient(120% 90% at 50% 18%, var(--bg-1), var(--bg-0) 72%);
+  color: var(--ink);
+  font-family: "Nunito", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.scene {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: calc(env(safe-area-inset-top) + 20px) 20px calc(env(safe-area-inset-bottom) + 18px);
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+/* ---------- Kopfbereich ---------- */
+
+.hud { text-align: center; }
+
+.eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.height {
+  margin: 6px 0 0;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(52px, 16vw, 68px);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.height .unit {
+  font-size: 0.38em;
+  font-weight: 600;
+  margin-left: 6px;
+  color: var(--ink-dim);
+}
+
+.stage {
+  margin: 6px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--aqua);
+}
+
+.stage.pulse { animation: stagePulse 0.5s ease; }
+
+@keyframes stagePulse {
+  0% { opacity: 0.2; transform: translateY(4px); }
+  100% { opacity: 1; transform: none; }
+}
+
+/* ---------- Bühne ---------- */
+
+.stage-area {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* warmer Lampenschein hinter der Pflanze */
+.stage-area::before {
+  content: "";
+  position: absolute;
+  inset: 8% 6% 12%;
+  background: radial-gradient(closest-side, rgba(244, 201, 120, 0.14), transparent 70%);
+  pointer-events: none;
+}
+
+#scene-svg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-height: 62dvh;
+}
+
+#soil { transition: fill 2.6s ease; }
+#soil.wet { fill: #2C1D14; transition: fill 0.25s ease; }
+
+#plant-wrap {
+  transform-box: view-box;
+  transform-origin: 50% 72%;
+}
+
+#plant-wrap.boing { animation: boing 0.34s ease-out; }
+
+@keyframes boing {
+  0%   { transform: scale(1, 1); }
+  35%  { transform: scale(1.045, 0.94); }
+  70%  { transform: scale(0.985, 1.03); }
+  100% { transform: scale(1, 1); }
+}
+
+/* ---------- Steuerung ---------- */
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.hint {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-dim);
+  min-height: 1.4em;
+  transition: color 0.4s ease;
+}
+
+.hint.thirsty { color: #E8B06B; }
+
+.water-btn {
+  width: 92px;
+  height: 92px;
+  border: none;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  background: radial-gradient(circle at 32% 26%, #C9EDF5, #7CCFE4 46%, var(--aqua-deep));
+  box-shadow:
+    0 8px 28px rgba(122, 209, 232, 0.35),
+    inset 0 -8px 14px rgba(0, 42, 60, 0.28),
+    inset 0 3px 6px rgba(255, 255, 255, 0.35);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.water-btn:active {
+  transform: scale(0.9);
+  box-shadow:
+    0 4px 14px rgba(122, 209, 232, 0.28),
+    inset 0 -4px 10px rgba(0, 42, 60, 0.3);
+}
+
+.water-btn:focus-visible {
+  outline: 3px solid var(--aqua);
+  outline-offset: 4px;
+}
+
+.record {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-dim);
+  opacity: 0.8;
+}
+
+/* ---------- Desktop-Rahmen ---------- */
+
+@media (min-width: 700px) {
+  .scene {
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* ---------- Reduzierte Bewegung ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  #plant-wrap.boing { animation: none; }
+  .stage.pulse { animation: none; }
+}
