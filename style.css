@@ -325,24 +325,6 @@ body {
   outline-offset: 3px;
 }
 
-.deco-heart {
-  position: absolute;
-  fill: var(--heart);
-  opacity: 0.9;
-  overflow: visible;
-  animation: floaty 3.6s ease-in-out infinite alternate;
-}
-
-.deco-heart.slow {
-  animation-duration: 5s;
-  fill: var(--heart-deep);
-}
-
-@keyframes floaty {
-  from { transform: translateY(0) rotate(-7deg); }
-  to   { transform: translateY(-9px) rotate(8deg); }
-}
-
 /* ---------- Desktop-Rahmen ---------- */
 
 @media (min-width: 700px) {
@@ -358,8 +340,7 @@ body {
   #plant-wrap.boing { animation: none; }
   .stage.pulse { animation: none; }
   .p-heart.current,
-  .p-heart.done,
-  .deco-heart { animation: none; }
+  .p-heart.done { animation: none; }
   .stage-area { transition: opacity 0.45s ease; }
   .stage-area.swap-out,
   .stage-area.swap-in { transform: none; }
